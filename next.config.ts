@@ -22,11 +22,17 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "10mb",
     },
   },
-  // Suppress false-positive warnings about headers() in Next.js 15
+  // Suppress warnings and enable better error handling
   logging: {
     fetches: {
       fullUrl: false,
     },
+  },
+  typescript: {
+    ignoreBuildErrors: false,
+  },
+  eslint: {
+    ignoreDuringBuilds: false,
   },
 };
 

@@ -130,7 +130,9 @@ export function ChatArea({
         if (response.ok) {
           const data = await response.json();
           activeConversationId = data.conversationId;
-          onConversationCreated(activeConversationId);
+          if (activeConversationId) {
+            onConversationCreated(activeConversationId);
+          }
         }
       }
 
@@ -206,66 +208,70 @@ export function ChatArea({
   };
 
   return (
-    <main className="flex-1 flex flex-col overflow-hidden">
+    <div className="flex-1 flex flex-col overflow-hidden bg-[#212121]">
       {/* Header */}
-      <header className="h-16 border-b border-border flex items-center justify-between px-4">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={onToggleSidebar}
-          className="md:hidden"
+      <header className="h-12 flex items-center  px-4 relative">
+        {/* Center - ChatGPT Dropdown */}
+        <span className="text-white font-normal text-lg">ChatGPT</span>
+        <svg
+          className="w-3 h-3 text-gray-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
         >
-          <Menu className="h-5 w-5" />
-        </Button>
-        <div className="flex items-center gap-2">
-          <Sparkles className="h-5 w-5 text-primary" />
-          <h1 className="font-semibold">
-            {conversationId ? "Chat" : "New Conversation"}
-          </h1>
-        </div>
-        <div className="w-10 md:hidden" /> {/* Spacer for centering */}
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M19 9l-7 7-7-7"
+          />
+        </svg>
       </header>
 
       {/* Messages Area */}
-      <ScrollArea className="flex-1 px-4">
-        <div className="max-w-3xl mx-auto py-8 space-y-6">
-          {chatMessages.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-[60vh] text-center">
-              <Sparkles className="h-16 w-16 text-muted-foreground mb-4" />
-              <h2 className="text-2xl font-semibold mb-2">
-                How can I help you today?
+      <ScrollArea className="flex-1">
+        {chatMessages.length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-full text-center px-4">
+            <div className="mb-8">
+              <h2 className="text-3xl font-normal mb-2 text-white">
+                Where should we begin?
               </h2>
-              <p className="text-muted-foreground">
-                Start a conversation by sending a message below
-              </p>
             </div>
-          ) : (
-            chatMessages.map((message, index) => {
+          </div>
+        ) : (
+          <div className="w-full">
+            {chatMessages.map((message, index) => {
               const dbMessage = messages.find(
                 (m) => m._id?.toString() === message.id
               );
               return (
-                <ChatMessage
+                <div
                   key={message.id || index}
-                  message={message}
-                  fileUrls={dbMessage?.fileUrls}
-                  isEdited={dbMessage?.isEdited}
-                  onEdit={
-                    message.role === "user"
-                      ? (content) => handleEditMessage(message.id, content)
-                      : undefined
-                  }
-                />
+                  className="w-full flex justify-center"
+                >
+                  <div className="w-full max-w-4xl">
+                    <ChatMessage
+                      message={message}
+                      fileUrls={dbMessage?.fileUrls}
+                      isEdited={dbMessage?.isEdited}
+                      onEdit={
+                        message.role === "user"
+                          ? (content) => handleEditMessage(message.id, content)
+                          : undefined
+                      }
+                    />
+                  </div>
+                </div>
               );
-            })
-          )}
-          <div ref={scrollRef} />
-        </div>
+            })}
+            <div ref={scrollRef} />
+          </div>
+        )}
       </ScrollArea>
 
       {/* Input Area */}
-      <div className="border-t border-border bg-background">
-        <div className="max-w-3xl mx-auto px-4 py-4">
+      <div className="bg-[#212121]">
+        <div className="max-w-4xl mx-auto px-4 py-4">
           <ChatInput
             onSendMessage={handleSendMessage}
             onFileUpload={handleFileUpload}
@@ -275,6 +281,6 @@ export function ChatArea({
           />
         </div>
       </div>
-    </main>
+    </div>
   );
 }

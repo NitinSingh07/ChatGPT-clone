@@ -60,7 +60,7 @@ export function ChatInterface() {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden bg-background">
+    <div className="flex h-screen bg-[#212121]">
       <Sidebar
         conversations={conversations}
         currentConversationId={currentConversationId}

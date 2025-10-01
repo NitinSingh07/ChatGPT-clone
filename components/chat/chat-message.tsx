@@ -44,20 +44,26 @@ export function ChatMessage({
 
   return (
     <div
-      className={`flex gap-4 ${isUser ? "flex-row-reverse" : "flex-row"} group`}
+      className={`flex gap-4 p-4 ${
+        isUser ? "flex-row-reverse" : "flex-row"
+      } group hover:bg-gray-700/30`}
     >
       {/* Avatar */}
       <Avatar className="h-8 w-8 shrink-0">
         {isUser ? (
           <>
             <AvatarImage src={user?.imageUrl} alt={user?.fullName || "User"} />
-            <AvatarFallback>
-              <User className="h-5 w-5" />
+            <AvatarFallback className="bg-[#10a37f] text-white">
+              {user?.firstName?.[0] ||
+                user?.emailAddresses[0]?.emailAddress?.[0] ||
+                "U"}
             </AvatarFallback>
           </>
         ) : (
-          <AvatarFallback className="bg-primary text-primary-foreground">
-            <Bot className="h-5 w-5" />
+          <AvatarFallback className="bg-[#10a37f] text-white">
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+            </svg>
           </AvatarFallback>
         )}
       </Avatar>
@@ -69,8 +75,8 @@ export function ChatMessage({
         <div
           className={`rounded-2xl px-4 py-3 ${
             isUser
-              ? "bg-primary text-primary-foreground ml-auto max-w-[80%]"
-              : "bg-muted max-w-full"
+              ? "bg-[#10a37f] text-white ml-auto max-w-[80%]"
+              : "bg-gray-700 text-white max-w-full"
           }`}
         >
           {isEditing ? (
@@ -150,14 +156,14 @@ export function ChatMessage({
         {!isEditing && (
           <div className="flex items-center gap-2 px-2">
             {isEdited && (
-              <span className="text-xs text-muted-foreground">(edited)</span>
+              <span className="text-xs text-gray-400">(edited)</span>
             )}
             {isUser && onEdit && (
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsEditing(true)}
-                className="h-7 opacity-0 group-hover:opacity-100 transition-opacity"
+                className="h-7 opacity-0 group-hover:opacity-100 transition-opacity text-gray-400 hover:text-white"
               >
                 <Edit2 className="h-3 w-3 mr-1" />
                 Edit
