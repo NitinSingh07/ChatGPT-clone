@@ -29,6 +29,10 @@ export function ChatInterface() {
       if (response.ok) {
         const data = await response.json();
         setConversations(data);
+        // Set initial conversation if none is selected
+        if (!currentConversationId && data.length > 0) {
+          setCurrentConversationId(data[0]._id.toString());
+        }
       }
     } catch (error) {
       console.error("Failed to load conversations:", error);
@@ -36,7 +40,25 @@ export function ChatInterface() {
   };
 
   const handleNewConversation = async () => {
-    setCurrentConversationId(null);
+    if (!user?.id) return;
+
+    try {
+      const response = await fetch("/api/conversations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: "New Chat", userId: user.id }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setCurrentConversationId(data.conversationId);
+        loadConversations(); // Reload conversations to show the new one
+      } else {
+        console.error("Failed to create new conversation");
+      }
+    } catch (error) {
+      console.error("Error creating new conversation:", error);
+    }
   };
 
   const handleSelectConversation = (conversationId: string) => {
